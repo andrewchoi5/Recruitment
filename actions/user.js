@@ -36,13 +36,13 @@ exports.usersList = {
         "name": "Andrew Choi",
         "email": "achoi@ca.ibm.com",
         "role": "manager",
-        "access": true
+        "fullaccess": true
       },
       {
         "name": "Emad Al-Shihabi",
         "email": "eshihabi@ca.ibm.com",
         "role": "manager",
-        "access": false
+        "fullaccess": false
       }
     ]
   },
@@ -109,7 +109,7 @@ exports.userCreate = {
 
    const user = new User( requestedName, requestedEmail, 'manager', false);
    users.unshift(user);
-   data.response.result = true; 
+   data.response.result = true;
    next(error)
   }
 }
