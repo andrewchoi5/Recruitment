@@ -21,7 +21,7 @@ let users = [
 // Action hero
 // conig/routes.js has the routing
 
-exports.usersList = {
+exports.usersList = { //npm run push
   name:                   'usersList',
   description:            'List all the users on ' + packageJSON.name,
   // blockedConnectionTypes: [],
@@ -108,6 +108,34 @@ exports.userCreate = {
    const requestedName  = data.params.name || "";
 
    const user = new User( requestedName, requestedEmail, 'manager', false);
+   users.unshift(user);
+   data.response.result = true;
+   next(error)
+  }
+}
+
+exports.profileCreate = {
+  name: 'profileCreate',
+  description: 'create a new profile to ' + packageJSON.name,
+  inputs: {
+    name:{
+      required: true
+    },
+    email: {
+      required: true
+    }
+  },
+  outputExample: {
+    data: {
+      result: true
+    }
+  },
+  run: (api, data, next) => {
+   let error = null;
+   // create profile code goes here
+   const requestedEmail = data.params.email || "";
+   const requestedName  = data.params.name || "";
+   const user = new User( requestedName, requestedEmail, "profile", false);
    users.unshift(user);
    data.response.result = true;
    next(error)

@@ -8,7 +8,8 @@ exports['default'] = {
       ],
 
       all: [
-        { path: "/users/create", action: "userCreate" }
+        { path: "/users/create", action: "userCreate" },
+        { path: "/profiles/create", action: "profileCreate" }
       ]
       /* ---------------------
       routes.js
