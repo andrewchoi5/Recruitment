@@ -5,6 +5,10 @@ exports['default'] = {
       get: [
         { path: "/users/access", action: "userFind"},
         { path: "/users", action: "usersList" }
+      ],
+
+      all: [
+        { path: "/users/create", action: "userCreate" }
       ]
       /* ---------------------
       routes.js

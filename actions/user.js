@@ -9,14 +9,14 @@ class User{
     this.name = name;
     this.email = email;
     this.role = role;
-    this.access = access;
+    this.fullaccess = access;
   }
 }
-const users = [
+let users = [
   new User('Andrew Choi','achoi@ca.ibm.com','manager',true),
   new User('Emad Al-Shihabi','eshihabi@ca.ibm.com','manager',false)
+  // new User('John Appleseed','jappleseed@ca.ibm.com','developer',true)
 ];
-
 
 // Action hero
 // conig/routes.js has the routing
@@ -53,7 +53,6 @@ exports.usersList = {
     next(error);
   }
 };
-
 exports.userFind = {
   name: 'userFind',
   description: 'find user email if it has access to ' + packageJSON.name,
@@ -64,22 +63,53 @@ exports.userFind = {
   },
   outputExample: {
     data: {
-      access: true
+      "name": "Emad Al-Shihabi",
+      "email": "eshihabi@ca.ibm.com",
+      "role": "manager",
+      "fullaccess": true
     }
   },
   run: (api, data, next) => {
     let error = null;
-
+    // find user code goes here
     const requestedEmail = data.params.email || "";
     const user = users.find( (user) => {
       // check if it has access too then check if requestEmail match
-      return user.access && user.email === requestedEmail
+      return user.fullaccess && user.email === requestedEmail
     });
-
-    data.response.data = {
-      access: user? true:false
-    };
-
+    if(user){
+      data.response.data = user;
+    } else {
+      error = "user is undefined.";
+    }
     next(error);
+  }
+}
+exports.userCreate = {
+  name: 'userCreate',
+  description: 'create a new user to ' + packageJSON.name,
+  inputs: {
+    name:{
+      required: true
+    },
+    email: {
+      required: true
+    }
+  },
+  outputExample: {
+    data: {
+      result: true
+    }
+  },
+  run: (api, data, next) => {
+   let error = null;
+   // create profile code goes here
+   const requestedEmail = data.params.email || "";
+   const requestedName  = data.params.name || "";
+
+   const user = new User( requestedName, requestedEmail, 'manager', false);
+   users.unshift(user);
+   data.response.result = true; 
+   next(error)
   }
 }
