@@ -13,11 +13,12 @@ class User{
 }
 
 class Profile{
-  constructor(name, email, role, access){
-    this.name = name;
+  constructor(firstname, lastname, email, city, school){
+    this.firstname = firstname;
+    this.lastname = lastname;
     this.email = email;
-    this.role = role;
-    this.fullaccess = access;
+    this.city = city;
+    this.school = school;
   }
 }
 
@@ -28,8 +29,8 @@ let users = [
 
 
 let profiles = [
-  new Profile('Jimmy Fallon','fallon@nbc.com','student',true),
-  new Profile('Hope Solo','solo@canada.com','student',false)
+  new Profile('Jimmy','Fallon','fallon@nbc.com','New York City','New York University'),
+  new Profile('Hope','Solo','solo@canada.com','Toronto','University of Toronto')
 ];
 // Action hero
 // conig/routes.js has the routing
@@ -83,16 +84,15 @@ exports.userFind = { // http://odin-api.mybluemix.net/api/userFind?email=achoi@c
   },
   run: (api, data, next) => {
     let error = null;
-    // find user code goes here
-    const requestedEmail = data.params.email || "";
-    const user = users.find( (user) => {
-      // check if it has access too then check if requestEmail match
-      return user.fullaccess && user.email === requestedEmail
+    let requestedEmail = data.params.email || "";
+    requestedEmail = requestedEmail.toLowerCase();
+    const user = users.find((user) => {
+      return user.fullaccess && user.email.toLowerCase() === requestedEmail.toLowerCase();
     });
     if(user){
       data.response.data = user;
     } else {
-      error = "user is undefined.";
+      error = "The user is undefined.";
     }
     next(error);
   }
@@ -122,7 +122,7 @@ exports.userCreate = {
    const user = new User( requestedName, requestedEmail, 'manager', false);
    users.unshift(user);
    data.response.result = true;
-   next(error)
+   next(error);
   }
 }
 
@@ -139,10 +139,11 @@ exports.profilesList = {
   outputExample:  {
     "data": [
       {
-        "name": "Jimmy Fallon",
+        "firstName": "Jimmy",
+        "lastName": "Fallon",
         "email": "fallon@nbc.com",
-        "role": "student",
-        "fullaccess": true
+        "city": "New York City",
+        "school": "New York University"
       }
     ]
   },
@@ -165,26 +166,31 @@ exports.profilesSearch = {
   outputExample:          {
     "data": [
       {
-        "name": "Hope Solo",
+        "firstName": "Hope",
+        "lastName": "Solo",
         "email": "solo@canada.com",
-        "role": "student",
-        "fullacess": true
+        "city": "Toronto",
+        "school": "University of Toronto"
       }
     ]
   },
   run: (api, data, next) => {
     let error = null;
-    const requestedQuery = data.params.query || "";
-    const result = profiles.find( (requestedQuery) => {
-      return profile.name == requestedQuery || profile.type == requestedQuery || profile.role == requestedQuery;
+    let requestedQuery = data.params.query || "";
+    requestedQuery = requestedQuery.toLowerCase();
+    const profile = profiles.find((profile) => {
+      return profile.firstname.toLowerCase() == requestedQuery || profile.lastname.toLowerCase() == requestedQuery || profile.email.toLowerCase() == requestedQuery || profile.city.toLowerCase() == requestedQuery || profile.school.toLowerCase() == requestedQuery;
     });
-      if(result){
-        data.response.data = result;
+      if(profile){
+        data.response.data = profile;
       } else {
         error = "profile has not been found.";
       }
     next(error);
   }
+
+
+
 };
 exports.profileCreate = {
   name: 'profileCreate',

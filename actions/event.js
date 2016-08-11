@@ -93,14 +93,15 @@ exports.eventsSearch = {
   },
   run: (api, data, next) => {
     let error = null;
-    const requestedQuery = data.params.query || "";
-    const result = events.find( (requestedQuery) => {
-      return event.name == requestedQuery || event.type == requestedQuery || event.location == requestedQuery;
+    let requestedQuery = data.params.query || "";
+    requestedQuery = requestedQuery.toLowerCase();
+    const event = events.find( (event) => {
+      return event.name.toLowerCase() == requestedQuery || event.type.toLowerCase() == requestedQuery || event.location.toLowerCase() == requestedQuery;
     });
-      if(result){
-        data.response.data = result;
+      if(event){
+        data.response.data = event;
       } else {
-        error = "Event has not been found.";
+        error = "The event has not been found.";
       }
     next(error);
   }

@@ -4,7 +4,8 @@ exports['default'] = {
 
       get: [
         { path: "/users/access", action: "userFind"},
-        { path: "/users", action: "usersList" }
+        { path: "/users", action: "usersList" },
+        { path: "/profiles/access", action: "profilesSearch" }
       ],
 
       all: [

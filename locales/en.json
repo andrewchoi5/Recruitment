@@ -204,5 +204,12 @@
 	"! /Users/andrewchoi5/Desktop/backend/actions/event.js:66": "! /Users/andrewchoi5/Desktop/backend/actions/event.js:66",
 	"! /Users/andrewchoi5/Desktop/backend/actions/user.js:19": "! /Users/andrewchoi5/Desktop/backend/actions/user.js:19",
 	"! lass User{": "! lass User{",
-	"!      ^^^^": "!      ^^^^"
+	"!      ^^^^": "!      ^^^^",
+	"!     at new Profile (/Users/andrewchoi5/Desktop/backend/actions/user.js:17:23)": "!     at new Profile (/Users/andrewchoi5/Desktop/backend/actions/user.js:17:23)",
+	"!     at Object.<anonymous> (/Users/andrewchoi5/Desktop/backend/actions/user.js:32:3)": "!     at Object.<anonymous> (/Users/andrewchoi5/Desktop/backend/actions/user.js:32:3)",
+	"! /Users/andrewchoi5/Desktop/backend/actions/user.js:174": "! /Users/andrewchoi5/Desktop/backend/actions/user.js:174",
+	"!         \"firstName\": \"Hope\",": "!         \"firstName\": \"Hope\",",
+	"!         ^^^^^^^^^^^": "!         ^^^^^^^^^^^",
+	"! /Users/andrewchoi5/Desktop/backend/actions/user.js:192": "! /Users/andrewchoi5/Desktop/backend/actions/user.js:192",
+	"!   run: (api, data, next) => {": "!   run: (api, data, next) => {"
 }
