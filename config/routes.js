@@ -3,14 +3,14 @@ exports['default'] = {
     return {
 
       get: [
-        { path: "/users/access", action: "userFind"},
+        { path: "/users/info", action: "userFind"},
         { path: "/users", action: "usersList" },
         { path: "/profiles/access", action: "profilesSearch" }
       ],
 
-      all: [
+      post: [
         { path: "/users/create", action: "userCreate" },
-        { path: "/profiles/create", action: "profileCreate" }
+        { path: "/profiles/create", action: "profileCreate" },
       ]
       /* ---------------------
       routes.js

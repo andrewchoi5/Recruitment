@@ -1,38 +1,44 @@
 'use strict';
-
 var path = require('path');
 var packageJSON = require(path.normalize(__dirname + path.sep + '..' + path.sep  + 'package.json'));
 
-class Event{
-  constructor(name, type, location, date, id){ // type: the title, not the ID.
-    this.name = name;
-    this.type = type;
-    this.location = location;
-    this.date = date;
-    this.id = id;
+exports.eventTypesList = {
+  name:                   'eventTypesList',
+  description:            'Show all event types in database.',
+  toDocument:             true,
+  middleware:             [],
+  inputs: {
+    query: {
+      required: false
+    }
+  },
+  outputExample:  {
+
+      "data": [
+        {
+          name: "Networking Session",
+          id: "0"
+          },
+          {
+          name: "Campus Info Session",
+          id: "1"
+          },
+          {
+          name: "Interview Session",
+          id: "2"
+          }
+        ]
+
+  },
+  run: (api, data, next) => {
+    let error = null;
+    data.response.data = api.eventTypes;
+    next(error);
   }
-}
-let events = [
-  new Event('University of Waterloo Socialization','Networking Session','Waterloo','2016-08-10','10'),
-  new Event('University of Western Ontario Socialization','Networking Session','London','2016-08-11','11')
-
-];
-
-const event = {
-      "id": "2",
-      "city": "Toronto",
-      "eventType": "1", //text not the id
-      "sessionType": "2",
-      "date": "2016-08-09"
 };
-const eventType = [
-    {"id":"1","name":"Networking Session"},
-    {"id":"2","name":"Campus Info Session"},
-    {"id":"3","name":"Interview Session"}
-];
+
 
 exports.eventsList = {
-  // http://odin-api.mybluemix.net/api/eventsList?query=toronto
   name:                   'eventsList',
   description:            'Show all events in database.',
   toDocument:             true,
@@ -46,79 +52,121 @@ exports.eventsList = {
     "data": [
       {
         "name": "University of British Columbia Socialization",
-        "type": "Networking Session",
+        "event": "Networking Session",
         "location": "Vancouver",
-        "date": "2016-08-12",
+        "date": "2019-09-09",
         "id": '12'
-      },
-      {
-        "name": "University of Toronto Socialization",
-        "type": "Networking Session",
-        "location": "Toronto",
-        "date": "2016-08-14",
-        "id": '14'
       }
     ]
   },
   run: (api, data, next) => {
     let error = null;
-    data.response.data = events;
-    next(error);
-  }
-};
-exports.eventsSearch = {
-  // http://odin-api.mybluemix.net/api/eventsSearch?query=toronto
-  name:                   'eventsSearch',
-  description:            'Search for all applicable events in database.',
-  // blockedConnectionTypes: [],
-  // matchExtensionMimeType: false,
-  // version:                1.0,
-  toDocument:             true,
-  middleware:             [],
-  inputs: {
-    query: {
-      required: true
-    }
-  },
-  outputExample:          {
-    "data": [
-      {
-        "name": "McMaster University Socialization",
-        "type": "Networking Session",
-        "location": "Hamilton",
-        "date": "2016-08-15",
-        "id": '15'
-      }
-    ]
-  },
-  run: (api, data, next) => {
-    let error = null;
-    let requestedQuery = data.params.query || "";
-    requestedQuery = requestedQuery.toLowerCase();
-    const event = events.find( (event) => {
-      return event.name.toLowerCase() == requestedQuery || event.type.toLowerCase() == requestedQuery || event.location.toLowerCase() == requestedQuery;
-    });
-      if(event){
-        data.response.data = event;
-      } else {
-        error = "The event has not been found.";
-      }
+    data.response.data = api.events;
     next(error);
   }
 };
 
-const sessionType = [
-    {"id":"1","name":"Networking Session"},
-    {"id":"2","name":"Campus Info Session"},
-    {"id":"3","name":"Interview Session"}
-];
-const profile = {
-      "name": "Emad Al-Shihabi",
-      "email": "eshihabi@ca.ibm.com",
-      "role": "profile",
-      "sessionType": "1",
-      "event": "2",
-      "fullaccess": true
+
+
+exports.eventCreate = {
+  name: 'eventCreate',
+  description: 'create a new event to ' + packageJSON.name,
+  inputs: {
+    name:{
+      required: true
+    },
+    location: {
+      required: true
+    },
+    date:{
+      required: true
+    },
+    eventTypeId:{
+      required: true
+    }
+  },
+
+  outputExample: {
+    data: {
+      result: true
+    }
+  },
+  run: (api, data, next) => {
+   let error = null;
+   const requestedName  = data.params.name || "";
+   const requestedLocation  = data.params.location || "";
+   const requestedDate  = data.params.date || "";
+   let requestedEventTypeId  = data.params.eventTypeId || "";
+   if(requestedEventTypeId > 2 || requestedEventTypeId < 0)requestedEventTypeId = '0';
+
+   const event = new api.Event(requestedName,requestedEventTypeId,requestedLocation,requestedDate,'12');
+
+   api.events.unshift(event);
+   data.response.result = true;
+   next(error);
+  }
+}
+// delete eventsSearch
+// exports.eventsSearch = { // http://odin-api.mybluemix.net/api/eventsSearch?query=toronto
+//   name:                   'eventsSearch',
+//   description:            'Search for all applicable events in database.',
+//   toDocument:             true,
+//   middleware:             [],
+//   inputs: {
+//     query: {
+//       required: true
+//     }
+//   },
+//   outputExample:          {
+//     "data": [
+//       {
+//         "name": "McMaster University Socialization",
+//         "type": "Networking Session",
+//         "location": "Hamilton",
+//         "date": "2016-08-15",
+//         "id": '15'
+//       }
+//     ]
+//   },
+//   run: (api, data, next) => {
+//     let error = null;
+//     let requestedQuery = data.params.query || "";
+//     let results = [];
+//     requestedQuery = requestedQuery.toLowerCase();
+//     let event = events.find((event) => {
+//                   if(event.name.toLowerCase() == requestedQuery || event.type.toLowerCase() == requestedQuery || event.location.toLowerCase() == requestedQuery){
+//                       results.push(event);
+//                   }
+//     });
+//     event = true;
+//       if(event){
+//         data.response.data = results;
+//       } else {
+//         error = "The event has not been found.";
+//       }
+//     next(error);
+//   }
+// };
+exports.schoolsList = {
+  name:                   'schoolsList',
+  description:            'Show all schools in database.',
+  toDocument:             true,
+  middleware:             [],
+  inputs: {
+
+  },
+  outputExample:  {
+    "data": [
+      {
+        "name": "University of California, Berkeley",
+        "location": "Berkeley",
+        "id": "89"
+      }
+    ]
+  },
+  run: (api, data, next) => {
+    let error = null;
+    data.response.data = api.schools;
+    next(error);
+  }
 };
-// userFind(email)
-// createProfile(firstName, lastName, email, city, school, eventId)
